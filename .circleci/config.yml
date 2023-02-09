@@ -1,48 +1,41 @@
-{\rtf1\ansi\ansicpg1252\cocoartf2638
-\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
-{\colortbl;\red255\green255\blue255;}
-{\*\expandedcolortbl;;}
-\paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/2.0/configuration-reference      
+version: 2 # use CircleCI 2.0
 
-\f0\fs24 \cf0 # Use the latest 2.1 version of CircleCI pipeline process engine.\
-# See: https://circleci.com/docs/2.0/configuration-reference      \
-version: 2 # use CircleCI 2.0\
-\
-# Define a job to be invoked later in a workflow.\
-# See: https://circleci.com/docs/2.0/configuration-reference/#jobs\
-jobs: # a collection of steps\
-  # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.\
-  # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor\
-  build: # runs not using Workflows must have a `build` job as entry point\
-\
-    working_directory: ~/circleci-demo-java-spring # directory where steps will run\
-\
-    docker: # run the steps with Docker\
-      - image: circleci/openjdk:11-stretch # ...with this image as the primary container; this is where all `steps` will run\
-\
-    steps: # a collection of executable commands\
-\
-      - checkout # check out source code to working directory\
-\
-      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed\
-          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/\
-          key: circleci-demo-java-spring-\{\{ checksum "pom.xml" \}\}\
-\
-      - run: mvn dependency:go-offline # gets the project dependencies\
-\
-      - save_cache: # saves the project dependencies\
-          paths:\
-            - ~/.m2\
-          key: circleci-demo-java-spring-\{\{ checksum "pom.xml" \}\}\
-\
-      - run: mvn package # run the actual tests\
-\
-      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard.\
-          # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/\
-          path: target/surefire-reports\
-\
-      - store_artifacts: # store the uberjar as an artifact\
-          # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/\
-          path: target/demo-java-spring-0.0.1-SNAPSHOT.jar\
-      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples}
+# Define a job to be invoked later in a workflow.
+# See: https://circleci.com/docs/2.0/configuration-reference/#jobs
+jobs: # a collection of steps
+  # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
+  # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+  build: # runs not using Workflows must have a `build` job as entry point
+
+    working_directory: ~/circleci-demo-java-spring # directory where steps will run
+
+    docker: # run the steps with Docker
+      - image: circleci/openjdk:11-stretch # ...with this image as the primary container; this is where all `steps` will run
+
+    steps: # a collection of executable commands
+
+      - checkout # check out source code to working directory
+
+      - restore_cache: # restore the saved cache after the first run or if `pom.xml` has changed
+          # Read about caching dependencies: https://circleci.com/docs/2.0/caching/
+          key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
+
+      - run: mvn dependency:go-offline # gets the project dependencies
+
+      - save_cache: # saves the project dependencies
+          paths:
+            - ~/.m2
+          key: circleci-demo-java-spring-{{ checksum "pom.xml" }}
+
+      - run: mvn package # run the actual tests
+
+      - store_test_results: # uploads the test metadata from the `target/surefire-reports` directory so that it can show up in the CircleCI dashboard.
+          # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: target/surefire-reports
+
+      - store_artifacts: # store the uberjar as an artifact
+          # Upload test summary for display in Artifacts: https://circleci.com/docs/2.0/artifacts/
+          path: target/demo-java-spring-0.0.1-SNAPSHOT.jar
+      # See https://circleci.com/docs/2.0/deployment-integrations/ for deploy examples
